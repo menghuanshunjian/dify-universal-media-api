@@ -1,0 +1,178 @@
+identity:
+  author: menghuanshunjian
+  name: generate_media_async
+  label:
+    en_US: Generate Media (Async + Polling)
+    zh_Hans: 生成媒体（异步轮询）
+  icon: icon.svg
+description:
+  human:
+    en_US: Submit an asynchronous image/video job, poll its status, and return the generated Dify file.
+    zh_Hans: 提交异步图片或视频任务，轮询状态，并返回生成的 Dify 文件。
+  llm: Generate media using a configurable asynchronous submit-and-poll HTTP API.
+extra:
+  python:
+    source: tools/generate_media_async.py
+parameters:
+  - name: prompt
+    type: string
+    required: true
+    form: llm
+    label: { en_US: Prompt, zh_Hans: 提示词 }
+    human_description: { en_US: "Available as {{prompt}}.", zh_Hans: "在模板中使用 {{prompt}} 引用。" }
+    llm_description: The generation prompt.
+  - name: model
+    type: string
+    required: false
+    form: form
+    label: { en_US: Model, zh_Hans: 模型 }
+    human_description: { en_US: "Available as {{model}}.", zh_Hans: "在模板中使用 {{model}} 引用。" }
+  - name: input_url
+    type: string
+    required: false
+    form: llm
+    label: { en_US: Input Media URL, zh_Hans: 输入媒体 URL }
+    human_description: { en_US: "Available as {{input_url}}.", zh_Hans: "在模板中使用 {{input_url}} 引用。" }
+    llm_description: Optional source media URL.
+  - name: parameters_json
+    type: string
+    required: false
+    default: "{}"
+    form: form
+    label: { en_US: Custom Parameters (JSON), zh_Hans: 自定义参数（JSON） }
+    human_description: { en_US: "Values referenced by {{parameters.xxx}}.", zh_Hans: "通过 {{parameters.xxx}} 引用的值。" }
+  - name: submit_endpoint
+    type: string
+    required: true
+    form: form
+    label: { en_US: Submit Endpoint, zh_Hans: 任务提交接口 }
+    human_description: { en_US: Relative path on the configured API host used to create a generation task., zh_Hans: 已配置 API 主机上用于创建生成任务的相对路径。 }
+  - name: submit_method
+    type: select
+    required: true
+    default: POST
+    form: form
+    label: { en_US: Submit Method, zh_Hans: 提交方法 }
+    human_description: { en_US: HTTP method used to submit the task., zh_Hans: 提交任务使用的 HTTP 方法。 }
+    options:
+      - label: { en_US: POST, zh_Hans: POST }
+        value: POST
+      - label: { en_US: GET, zh_Hans: GET }
+        value: GET
+  - name: submit_body_template
+    type: string
+    required: true
+    default: '{"model":"{{model}}","prompt":"{{prompt}}"}'
+    form: form
+    label: { en_US: Submit Body Template (JSON), zh_Hans: 提交请求体模板（JSON） }
+    human_description: { en_US: JSON body template for creating a generation task., zh_Hans: 创建生成任务的 JSON 请求体模板。 }
+  - name: task_id_response_path
+    type: string
+    required: true
+    default: $.id
+    form: form
+    label: { en_US: Task ID Response Path, zh_Hans: 任务 ID 响应路径 }
+    human_description: { en_US: Dot/bracket path to the task identifier in the submit response., zh_Hans: 提交响应中任务 ID 的点号/数组路径。 }
+  - name: status_endpoint
+    type: string
+    required: true
+    form: form
+    label: { en_US: Status Endpoint, zh_Hans: 状态查询接口 }
+    human_description: { en_US: "Supports {{task_id}}, for example /tasks/{{task_id}}.", zh_Hans: "支持 {{task_id}}，例如 /tasks/{{task_id}}。" }
+  - name: status_method
+    type: select
+    required: true
+    default: GET
+    form: form
+    label: { en_US: Status Method, zh_Hans: 查询方法 }
+    human_description: { en_US: HTTP method used to query task status., zh_Hans: 查询任务状态使用的 HTTP 方法。 }
+    options:
+      - label: { en_US: GET, zh_Hans: GET }
+        value: GET
+      - label: { en_US: POST, zh_Hans: POST }
+        value: POST
+  - name: status_body_template
+    type: string
+    required: false
+    default: "{}"
+    form: form
+    label: { en_US: Status Body Template (JSON), zh_Hans: 状态请求体模板（JSON） }
+    human_description: { en_US: "Supports {{task_id}}. GET values are sent as query parameters.", zh_Hans: "支持 {{task_id}}；GET 请求会作为查询参数发送。" }
+  - name: status_response_path
+    type: string
+    required: true
+    default: $.status
+    form: form
+    label: { en_US: Status Response Path, zh_Hans: 状态响应路径 }
+    human_description: { en_US: Dot/bracket path to the current task status., zh_Hans: 当前任务状态的点号/数组路径。 }
+  - name: success_status_values
+    type: string
+    required: true
+    default: succeeded,success,completed,done
+    form: form
+    label: { en_US: Success Status Values, zh_Hans: 成功状态值 }
+    human_description: { en_US: Comma-separated and case-insensitive., zh_Hans: 使用英文逗号分隔，不区分大小写。 }
+  - name: failure_status_values
+    type: string
+    required: true
+    default: failed,error,canceled,cancelled
+    form: form
+    label: { en_US: Failure Status Values, zh_Hans: 失败状态值 }
+    human_description: { en_US: Comma-separated failure values; matching is case-insensitive., zh_Hans: 使用英文逗号分隔的失败值，不区分大小写。 }
+  - name: media_response_path
+    type: string
+    required: true
+    default: $.data.url
+    form: form
+    label: { en_US: Media Response Path, zh_Hans: 媒体响应路径 }
+    human_description: { en_US: Dot/bracket path to the generated media URL or Base64 value., zh_Hans: 生成媒体 URL 或 Base64 值的点号/数组路径。 }
+  - name: error_response_path
+    type: string
+    required: false
+    form: form
+    label: { en_US: Error Response Path, zh_Hans: 错误信息响应路径 }
+    human_description: { en_US: Optional path to the failure reason in a status response., zh_Hans: 状态响应中失败原因的可选路径。 }
+  - name: response_format
+    type: select
+    required: true
+    default: auto
+    form: form
+    label: { en_US: Response Format, zh_Hans: 响应格式 }
+    human_description: { en_US: Whether the result is a URL or Base64 string., zh_Hans: 结果是 URL 还是 Base64 字符串。 }
+    options:
+      - label: { en_US: Auto Detect, zh_Hans: 自动识别 }
+        value: auto
+      - label: { en_US: URL, zh_Hans: URL }
+        value: url
+      - label: { en_US: Base64, zh_Hans: Base64 }
+        value: base64
+  - name: media_type
+    type: select
+    required: true
+    default: video
+    form: form
+    label: { en_US: Media Type, zh_Hans: 媒体类型 }
+    human_description: { en_US: Expected generated media type., zh_Hans: 预期生成的媒体类型。 }
+    options:
+      - label: { en_US: Video, zh_Hans: 视频 }
+        value: video
+      - label: { en_US: Image, zh_Hans: 图片 }
+        value: image
+  - name: poll_interval_seconds
+    type: number
+    required: true
+    default: 5
+    min: 1
+    max: 60
+    form: form
+    label: { en_US: Poll Interval (seconds), zh_Hans: 轮询间隔（秒） }
+    human_description: { en_US: Delay between status requests., zh_Hans: 两次状态查询之间的间隔。 }
+  - name: timeout_seconds
+    type: number
+    required: true
+    default: 600
+    min: 10
+    max: 3600
+    form: form
+    label: { en_US: Total Timeout (seconds), zh_Hans: 总超时（秒） }
+    human_description: { en_US: Maximum time to wait for generation and download., zh_Hans: 等待生成及下载的最长时间。 }

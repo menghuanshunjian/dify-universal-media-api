@@ -1,0 +1,154 @@
+identity:
+  author: menghuanshunjian
+  name: generate_media
+  label:
+    en_US: Generate Media (Synchronous)
+    zh_Hans: 生成媒体（同步接口）
+  icon: icon.svg
+description:
+  human:
+    en_US: Call a configurable synchronous image or video generation API and return a Dify file.
+    zh_Hans: 调用可配置的同步图片或视频生成接口，并返回 Dify 文件。
+  llm: Generate an image or video through a configurable synchronous HTTP API.
+extra:
+  python:
+    source: tools/generate_media.py
+parameters:
+  - name: prompt
+    type: string
+    required: true
+    form: llm
+    label:
+      en_US: Prompt
+      zh_Hans: 提示词
+    human_description:
+      en_US: Generation prompt, available as {{prompt}} in templates.
+      zh_Hans: 生成提示词，在模板中使用 {{prompt}} 引用。
+    llm_description: The generation prompt.
+  - name: model
+    type: string
+    required: false
+    form: form
+    label:
+      en_US: Model
+      zh_Hans: 模型
+    human_description:
+      en_US: Model identifier, available as {{model}}.
+      zh_Hans: 模型标识，在模板中使用 {{model}} 引用。
+  - name: input_url
+    type: string
+    required: false
+    form: llm
+    label:
+      en_US: Input Media URL
+      zh_Hans: 输入媒体 URL
+    human_description:
+      en_US: Optional source image/video URL, available as {{input_url}}.
+      zh_Hans: 可选的源图片或视频地址，在模板中使用 {{input_url}} 引用。
+    llm_description: Optional source media URL for image-to-image or image-to-video generation.
+  - name: endpoint
+    type: string
+    required: true
+    form: form
+    label:
+      en_US: Endpoint
+      zh_Hans: 接口路径
+    human_description:
+      en_US: Relative path on the configured API host, for example /v1/images/generations.
+      zh_Hans: 已配置 API 主机上的相对路径，例如 /v1/images/generations。
+  - name: method
+    type: select
+    required: true
+    default: POST
+    form: form
+    label:
+      en_US: HTTP Method
+      zh_Hans: HTTP 方法
+    human_description:
+      en_US: HTTP method used for the generation request.
+      zh_Hans: 生成请求使用的 HTTP 方法。
+    options:
+      - label: { en_US: POST, zh_Hans: POST }
+        value: POST
+      - label: { en_US: GET, zh_Hans: GET }
+        value: GET
+  - name: request_body_template
+    type: string
+    required: true
+    default: '{"model":"{{model}}","prompt":"{{prompt}}"}'
+    form: form
+    label:
+      en_US: Request Body Template (JSON)
+      zh_Hans: 请求体模板（JSON）
+    human_description:
+      en_US: "JSON template supporting {{prompt}}, {{model}}, {{input_url}}, and {{parameters.xxx}}."
+      zh_Hans: "JSON 模板，支持 {{prompt}}、{{model}}、{{input_url}} 和 {{parameters.xxx}}。"
+  - name: parameters_json
+    type: string
+    required: false
+    default: "{}"
+    form: form
+    label:
+      en_US: Custom Parameters (JSON)
+      zh_Hans: 自定义参数（JSON）
+    human_description:
+      en_US: "Values referenced by {{parameters.xxx}} in the request template."
+      zh_Hans: "可在请求模板中通过 {{parameters.xxx}} 引用的值。"
+  - name: media_response_path
+    type: string
+    required: true
+    default: $.data[0].url
+    form: form
+    label:
+      en_US: Media Response Path
+      zh_Hans: 媒体响应路径
+    human_description:
+      en_US: Dot/bracket path to a URL or Base64 value, for example $.data[0].url.
+      zh_Hans: 指向 URL 或 Base64 的点号/数组路径，例如 $.data[0].url。
+  - name: response_format
+    type: select
+    required: true
+    default: auto
+    form: form
+    label:
+      en_US: Response Format
+      zh_Hans: 响应格式
+    human_description:
+      en_US: Whether the response value is a URL or Base64 string.
+      zh_Hans: 响应值是 URL 还是 Base64 字符串。
+    options:
+      - label: { en_US: Auto Detect, zh_Hans: 自动识别 }
+        value: auto
+      - label: { en_US: URL, zh_Hans: URL }
+        value: url
+      - label: { en_US: Base64, zh_Hans: Base64 }
+        value: base64
+  - name: media_type
+    type: select
+    required: true
+    default: image
+    form: form
+    label:
+      en_US: Media Type
+      zh_Hans: 媒体类型
+    human_description:
+      en_US: Expected generated media type.
+      zh_Hans: 预期生成的媒体类型。
+    options:
+      - label: { en_US: Image, zh_Hans: 图片 }
+        value: image
+      - label: { en_US: Video, zh_Hans: 视频 }
+        value: video
+  - name: timeout_seconds
+    type: number
+    required: true
+    default: 120
+    min: 10
+    max: 600
+    form: form
+    label:
+      en_US: Timeout (seconds)
+      zh_Hans: 超时（秒）
+    human_description:
+      en_US: Request and media download timeout.
+      zh_Hans: 请求及媒体下载超时时间。

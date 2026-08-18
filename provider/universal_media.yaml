@@ -1,0 +1,58 @@
+identity:
+  author: menghuanshunjian
+  name: universal_media
+  label:
+    en_US: Universal Media API
+    zh_Hans: 通用媒体 API
+  description:
+    en_US: Call configurable image and video generation APIs.
+    zh_Hans: 调用可配置的图片和视频生成 API。
+  icon: icon.svg
+  tags:
+    - image
+credentials_for_provider:
+  base_url:
+    type: text-input
+    required: true
+    label:
+      en_US: API Base URL
+      zh_Hans: API 基础地址
+    placeholder:
+      en_US: https://api.example.com
+      zh_Hans: https://api.example.com
+  api_key:
+    type: secret-input
+    required: false
+    label:
+      en_US: API Key
+      zh_Hans: API Key
+  auth_header:
+    type: text-input
+    required: false
+    default: Authorization
+    label:
+      en_US: Authentication Header
+      zh_Hans: 鉴权请求头
+  auth_prefix:
+    type: text-input
+    required: false
+    default: Bearer
+    label:
+      en_US: Authentication Prefix
+      zh_Hans: 鉴权前缀
+    placeholder:
+      en_US: Bearer (leave empty for a raw key)
+      zh_Hans: Bearer（直接使用密钥时留空）
+  fixed_headers_json:
+    type: text-input
+    required: false
+    default: "{}"
+    label:
+      en_US: Fixed Headers (JSON)
+      zh_Hans: 固定请求头（JSON）
+extra:
+  python:
+    source: provider/universal_media.py
+tools:
+  - tools/generate_media.yaml
+  - tools/generate_media_async.yaml

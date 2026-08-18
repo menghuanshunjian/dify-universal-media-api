@@ -1,0 +1,34 @@
+version: 0.0.1
+type: plugin
+author: menghuanshunjian
+name: universal_media_api
+label:
+  en_US: Universal Media API
+  zh_Hans: 通用媒体 API
+description:
+  en_US: Connect configurable image and video generation APIs to Dify workflows.
+  zh_Hans: 将可配置的图片和视频生成 API 接入 Dify 工作流。
+icon: icon.svg
+privacy: PRIVACY.md
+created_at: "2026-08-18T00:00:00.000000000Z"
+resource:
+  memory: 268435456
+  permission:
+    tool:
+      enabled: true
+    endpoint:
+      enabled: false
+meta:
+  version: 0.0.1
+  arch:
+    - amd64
+    - arm64
+  runner:
+    language: python
+    version: "3.12"
+    entrypoint: main
+plugins:
+  tools:
+    - provider/universal_media.yaml
+tags:
+  - image
