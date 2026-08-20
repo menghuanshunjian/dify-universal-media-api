@@ -2,6 +2,8 @@ version: 0.0.1
 type: plugin
 author: menghuanshunjian
 name: universal_media_api
+repo: https://github.com/menghuanshunjian/dify-universal-media-api
+contact: https://github.com/menghuanshunjian/dify-universal-media-api/issues
 label:
   en_US: Universal Media API
   zh_Hans: 通用媒体 API
